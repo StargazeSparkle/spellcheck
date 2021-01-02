@@ -1,9 +1,9 @@
-(in-package spellcheck)
+(in-package :spellcheck)
 
 (defun start-bot (options)
     (let ((wiki (getf options :wiki))
           (lang (getf options :lang)))
-        (format t "~A.~A~%" lang wiki)))
+        (mw-init wiki lang)))
 
 (defun print-help ()
     (progn

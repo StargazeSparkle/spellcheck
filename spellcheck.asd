@@ -10,5 +10,6 @@
                   :serial t
                   :components
                     ((:file "package")
+                     (:file "http")
                      (:file "mediawiki")
                      (:file "spellcheck")))))

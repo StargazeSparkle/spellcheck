@@ -1,4 +1,4 @@
-(defpackage spellcheck
+(defpackage :spellcheck
     (:use cl arrow-macros))
 
 (require :access)
