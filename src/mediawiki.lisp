@@ -2,6 +2,5 @@
 
 ;; call this first to set up the http client
 (defun mw-init (wiki lang)
-    (progn 
-        (http-init (format nil "https://~A.fandom.com/~A/api.php" wiki lang))
-        (format t "Set wiki to: ~A.~A~%" lang wiki)))
+    (let ((client (make-http-client wiki lang)))
+        (print (http-get client '(("action" "help"))))))

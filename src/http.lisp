@@ -3,35 +3,27 @@
 ;; TODO:
 ;;     - take advantage of request reuse
 
-;; cookie jar stores cookie headers in order to maintain a login state
-(defvar *http-cookie-jar* nil)
+(defclass http-client ()
+    ((api-path
+        :initarg  :api-path
+        :initform nil
+        :accessor api-path)
+     (cookie-jar
+        :initarg  :cookie-jar
+        :initform (make-instance 'drakma:cookie-jar)
+        :accessor cookie-jar)))
 
-;; api path stores the full url to api.php on the wiki
-(defvar *http-api-path* nil)
-
-;; must be called first before any http requests can be made
-(defun http-init (url)
-    (progn
-        (push (cons "application" "json") drakma:*text-content-types*)
-        (setq *http-cookie-jar* (make-instance 'drakma:cookie-jar))
-        (setq *http-api-path* url)))
-
-;; http get request
-;; params must be a nested cons
-(defun http-get (params)
-    (let ((uri (format nil
-                       "~A?~A"
-                       *http-api-path*
-                       (quri:url-encode-params params))))
-        (drakma:http-request uri
-                             :preserve-uri t
-                             :cookie-jar *http-cookie-jar*)))
-
-;; http post request
-;; params must be a nested cons
-(defun http-post (params)
-    (drakma:http-request *http-api-path*
+(defmethod http-get ((object http-client) params)
+    (let* ((param-str (quri:url-encode-params params))
+           (path      (api-path object))
+           (url       (format nil "~A?~A" path param-str)))
+    (drakma:http-request url
                          :preserve-uri t
-                         :method :post
-                         :parameters params
-                         :cookie-jar *http-cookie-jar*))
+                         :cookie-jar   (cookie-jar object))))
+
+(defmethod http-post ((object http-client) params)
+    (drakma:http-request (api-path object)
+                         :preserve-uri t
+                         :method       :post
+                         :parameters   params
+                         :cookie-jar   (cookie-jar object)))
