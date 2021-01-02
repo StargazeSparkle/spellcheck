@@ -3,6 +3,10 @@
 ;; TODO:
 ;;     - take advantage of request reuse
 
+(defun make-http-client (wiki lang &key cookie-jar)
+    (let ((url (format nil "https://~A.fandom.com/~A/api.php" wiki lang)))
+        (make-instance 'http-client :api-path url :cookie-jar cookie-jar)))
+
 (defclass http-client ()
     ((api-path
         :initarg  :api-path
