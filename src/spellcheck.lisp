@@ -1,9 +1,12 @@
 (in-package :spellcheck)
 
 (defun start-bot (options)
-    (let ((wiki (getf options :wiki))
-          (lang (getf options :lang)))
-        (mw-init wiki lang)))
+    (let* ((wiki (getf options :wiki))
+           (lang (getf options :lang))
+           (mw-client (mediawiki/make wiki lang)))
+        (mediawiki/login mw-client
+                         "username"
+                         "password")))
 
 (defun print-help ()
     (progn
